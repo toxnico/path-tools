@@ -4,11 +4,12 @@
 (defn containing-folder
   "Returns all but the last element of a path"
   [path]
-  (->> (s/split path #"\/")
-       (reverse)
-       (rest)
-       (reverse)
-       (s/join "/")))
+  (when (s/includes? path "/")
+    (->> (s/split path #"\/")
+         (reverse)
+         (rest)
+         (reverse)
+         (s/join "/"))))
 
 (defn file-name
   "Returns the last element of a path"
@@ -27,3 +28,42 @@
          (map #(s/replace % #"^\.*/*|/*$" ""))
          (cons clean-head)
          (s/join "/"))))
+
+(defn file-extension
+  "Returns the extension of a file, with the initial dot.
+  if there is no extension, returns nil"
+  [path]
+  (let [file-name (file-name path)]
+    (when (s/includes? file-name ".")
+      (as-> path %
+            (clojure.string/split % #"\.")
+            (last %)
+            (str "." %)))))
+
+(defn file-name-without-extension
+  "Returns the complete path before the extension"
+  [path]
+  (if (nil? (file-extension path)) ;no extension ?
+    path
+    (as-> path %
+          (s/split % #"\.")
+          (drop-last %)
+          (s/join "." %))))
+
+(defn change-file-name
+  "Changes the file name, keeping the extension"
+  [new-name file-path]
+  (let [parent (containing-folder file-path)
+        extension (file-extension file-path)]
+    (if parent
+      (combine parent (str new-name extension))
+      (str new-name extension))))
+
+(defn change-extension
+  "Sets a new extension to a file path, if it already has an extension.
+   Otherwise, returns the path as is"
+  [new-extension file-path]
+  (if-not (file-extension file-path)
+    file-path
+    (-> (file-name-without-extension file-path)
+        (str new-extension))))
