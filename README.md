@@ -4,7 +4,7 @@ A Clojure library designed to help with files and folders paths manipulation.
 
 ## Usage
 
-[![Clojars Project](https://img.shields.io/clojars/v/org.clojars.toxnico/path-tools.svg)](https://clojars.org/org.clojars.toxnico/path-tools)
+[![Clojars Project](https://img.shields.io/clojars/v/path-tools.svg)](https://clojars.org/path-tools)
 
 For now, 3 functions available :
 * containing-folder : get the path of containing folder
