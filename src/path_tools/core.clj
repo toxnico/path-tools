@@ -1,6 +1,6 @@
 (ns path-tools.core
-  (:require [clojure.string :as s]))
-
+  (:require [clojure.string :as s])
+  (:import java.io.File))
 (defn containing-folder
   "Returns all but the last element of a path"
   [path]
@@ -67,3 +67,11 @@
     file-path
     (-> (file-name-without-extension file-path)
         (str new-extension))))
+
+(defn ls
+  "Returns the contents of a folder (not recursively)"
+  [folder-path]
+  (->> (File. folder-path)
+       (.listFiles)
+       (map #(.getAbsolutePath %))
+       (sort)))
